@@ -9,8 +9,8 @@ public abstract class AbstructDAOManager {
 	//メンバ
 	Connection conn = null;
 	String url = "jdbc:mysql://localhost:3306/TaskDB";
-	String user = "";
-	String password = "";
+	String user = "root";
+	String password = "MBnxncyj12";
 
 	//sql文
 	String getpasssql = "SELECT password FROM UserContext WHERE id = ?;";//パスワード取得用

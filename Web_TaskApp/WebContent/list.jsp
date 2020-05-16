@@ -31,9 +31,9 @@
 				<div><%=user %></div>
 				<!-- ログアウトボタン -->
 				<div>
-					<form action="/Web_TaskApp/TaskAppServlet" method="POST">
+					<form action="/Web_TaskApp/LogoutServlet" method="POST">
 						<input type="submit" value="ログアウト" />
-						<input type="hidden" name="functionStr" value="logout" />
+						<input type="hidden" name="functionStr" onClick= "onClickLogoutButton();" />
 					</form>
 				</div>
 			</div>
@@ -47,9 +47,9 @@
 
 <div class = "button" style="display:inline-flex">
 <!-- 新規作成ボタン -->
-	<input type= "submit" value="新規作成" onclick="onClickCreateBottun();" />
+	<input type= "submit" value="新規作成" onclick="onClickCreateButton();" />
 <!-- タスク削除ボタン -->
-	<input type="submit" value="削除" onclick="onClickDeleteBottun();" />
+	<input type="submit" value="削除" onclick="onClickDeleteButton();" />
 </div>
 
 	<input id="functionStr" name = "functionStr" type="hidden" />
@@ -100,16 +100,21 @@
 <!-- スクリプト -->
 <script>
   //新規作成ボタンが押された際は、functionStrに'gocreatetaskui'をセット
-  function onClickCreateBottun(){
+  function onClickCreateButton(){
 	document.getElementById("functionStr").value = "gocreatetaskui";
   }
 
   //削除ボタンが押された際はfunctionStrに'deletetask'をセット
-  function onClickDeleteBottun(){
+  function onClickDeleteButton(){
 
 	//チェックボックスが一つ以上選択されていたら動くようにする（課題）
 	window.confirm('選択されたタスクを削除します');
 	document.getElementById( "functionStr" ).value = "deletetask";
+  }
+
+  //ログアウトボタンが押された際は、functionStrに'logout'をセット
+   function onClickLogoutButton(){
+	document.getElementById("functionStr").value = "logout";
   }
 
   // 「全て選択」チェックで全てにチェック付く

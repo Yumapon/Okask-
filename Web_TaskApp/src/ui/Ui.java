@@ -16,6 +16,8 @@ public class Ui {
 	public static final String REGISTERUI = "";
 	//未ログイン画面
 	public static final String NOTLOGINUI = "/notlogin.jsp";
+	//エラー画面
+	public static final String ERRORUI = "/error.jsp";
 
 	//ログイン画面へのリンク
 	public static final String LOGINUILINK = "http://localhost:8081/Web_TaskApp/login.jsp";

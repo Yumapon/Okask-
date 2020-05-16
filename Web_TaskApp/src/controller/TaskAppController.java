@@ -72,6 +72,24 @@ public class TaskAppController {
 		System.out.println("セッションにユーザID(" + user_id + ")格納完了");
 	}
 
+	//ログアウト
+	public boolean Logout(final HttpServletRequest request) {
+
+		//ログアウト機能
+		try {
+			//ログアウト処理
+			service.logout(request.getSession());
+			request.setAttribute("message", "ログアウトしました");
+
+		} catch (falseLogoutException e) {
+			//ログアウト失敗（ありえる？）
+			System.out.println("ログアウト失敗");
+			return false;
+		}
+
+		return true;
+	}
+
 	public String Logic(String function, final HttpServletRequest request) {
 
 		//session取得
@@ -80,7 +98,6 @@ public class TaskAppController {
 		System.out.println("TaskAppContrller到達");
 
 		//機能振り分け
-		try {
 			System.out.println("機能振り分け");
 			System.out.println(function);
 
@@ -163,7 +180,7 @@ public class TaskAppController {
 			}
 
 			//一覧画面に遷移
-			else if( function.equals("golistui") || function.equals("login") )
+			else if( function.equals("golistui"))
 			{
 				//確認用
 				System.out.println("一覧画面遷移機能");
@@ -184,18 +201,6 @@ public class TaskAppController {
 				System.out.println("urlセット完了");
 
 			}
-
-			//ログアウト機能
-			else if(function.equals("logout"))
-			{
-				//ログアウト機能
-				service.logout(session);
-				request.setAttribute("message", "ログアウトしました");
-				//ログイン画面を返す
-				url = Ui.LOGINUI;
-				System.out.println("urlセット完了");
-			}
-
 			//Task削除機能
 			else if(function.equals("deletetask"))
 			{
@@ -224,12 +229,6 @@ public class TaskAppController {
 				url = Ui.LISTUI;
 				System.out.println("urlセット完了");
 			}
-
-		}  catch (falseLogoutException e) {
-			//ログアウト失敗（ありえる？）
-			System.out.println("ログアウト失敗");
-			url = Ui.LOGINUI;
-		}
 
 		System.out.println(url);
 		return url;

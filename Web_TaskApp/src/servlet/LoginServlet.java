@@ -41,7 +41,7 @@ public class LoginServlet extends HttpServlet {
 				TaskAppController taskAppController = new TaskAppController();
 
 				//確認用
-				System.out.println("サーブレット内ログイン処理中");
+				System.out.println("ログインサーブレット内ログイン処理中");
 				if(taskAppController.Login(request)) {
 
 					//ログイン成功時処理を行う
@@ -57,12 +57,15 @@ public class LoginServlet extends HttpServlet {
 
 					//どの処理を行うかを判断し、ビジネスロジックに渡す。
 					// 呼び出し元画面からデータ受け取り
+					System.out.println("振り分け用文字列受取処理");
 					String function = request.getParameter("functionStr");
+					System.out.println(function);
 					url = taskAppController.Logic(function, request);
 
 
 					//次画面に遷移
 					//request.setAttribute("message", "IDまたはパスワードが違います");
+					System.out.println("LoginServlet処理終了");
 					request.getRequestDispatcher(url).forward(request, response);
 					//response.sendRedirect(url);
 

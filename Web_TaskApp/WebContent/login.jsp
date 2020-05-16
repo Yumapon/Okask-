@@ -34,7 +34,7 @@
 			<p class="login_line">
 				<input type="submit" value="Sign Up" />
 			</p>
-				<input type="hidden" name="functionStr" value="login" />
+				<input id ="functionStr" type="hidden" name="functionStr" onClick = "onClickSignUpButton();" value="golistui" />
 		</form>
 	</div>
 </div>
@@ -44,4 +44,11 @@
 	</div>
 </footer>
 </body>
+
+<script>
+//Sign Upボタンが押された際はfunctionStrに'golistui'をセット
+function onClickSignUpButton(){
+	document.getElementById( "functionStr" ).value = "golistui";
+}
+</script>
 </html>

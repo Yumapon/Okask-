@@ -30,9 +30,9 @@
 				<div><%=user %></div>
 				<!-- ログアウトボタン -->
 				<div>
-					<form action="/Web_TaskApp/TaskAppServlet" method="POST">
+					<form action="/Web_TaskApp/LogoutServlet" method="POST">
 						<input type="submit" value="ログアウト" />
-						<input type="hidden" name="functionStr" value="logout" />
+						<input type="hidden" name="functionStr" onClick= "onClickLogoutButton();" />
 					</form>
 				</div>
 			</div>
