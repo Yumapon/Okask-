@@ -20,4 +20,5 @@ public interface DAOManager {
 	//タスクを削除する
 	void deleteTaskDAO(String[] taskNumList);
 
+	//（削除予定）堀川コミットテスト用コメント
 }
