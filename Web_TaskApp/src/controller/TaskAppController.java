@@ -36,6 +36,7 @@ public class TaskAppController {
 				service.login(usercontext);
 			} catch (falseLogionException | notExistException e) {
 				// ログイン失敗
+				request.setAttribute("message", "もう一度ログインし直してください");
 				return false;
 			}
 			//ユーザーコンテキストをセッションに格納(本当はパスワードをセッションに保持させるのはだめ)

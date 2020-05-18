@@ -74,7 +74,8 @@ public class LoginServlet extends HttpServlet {
 
 				}else {
 					//ログインエラー
-					request.getRequestDispatcher(Ui.NOTLOGINUI).forward(request, response);
+					System.out.println("ログインエラー");
+					request.getRequestDispatcher(Ui.LOGINUI).forward(request, response);
 				}
 
 	}
