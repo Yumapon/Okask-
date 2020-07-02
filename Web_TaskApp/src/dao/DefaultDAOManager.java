@@ -4,8 +4,11 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import exception.DuplicationError;
 import exception.notExistException;
+import obj.Task;
 import obj.UserContext;
 
 public class DefaultDAOManager extends AbstructDAOManager implements DAOManager {
@@ -32,7 +35,8 @@ public class DefaultDAOManager extends AbstructDAOManager implements DAOManager 
 		//dao
 		try {
 			//パスワード取得用のSQLを用意
-			pre_statement = conn.prepareStatement(getpasssql);
+			pre_statement = conn.prepareStatement(getpasssql, ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
 			pre_statement.setInt(1, id);
 
 			//SQL実行
@@ -44,7 +48,6 @@ public class DefaultDAOManager extends AbstructDAOManager implements DAOManager 
 			System.out.println("SQLエラーです");
 			//e.printStackTrace();
 		}
-
 		return password;
 	}
 
@@ -53,16 +56,14 @@ public class DefaultDAOManager extends AbstructDAOManager implements DAOManager 
 	public void taskstorageDAO(String taskNum, Date deadLine, String taskName, String content, String client) {
 		try {
 			//task格納用のSQLを用意
-			pre_statement = conn.prepareStatement(stragetasksql);
+			pre_statement = conn.prepareStatement(stragetasksql, ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+
 			pre_statement.setString(1, taskNum);
 			pre_statement.setDate(2, deadLine);
 			pre_statement.setString(3, taskName);
 			pre_statement.setString(4, content);
 			pre_statement.setString(5, client);
-
-			//テスト用
-			//System.out.print(stragetasksql);
-			//System.out.print(pre_statement);
 
 			//SQL実行(iには更新行数が格納される)
 			@SuppressWarnings("unused")
@@ -71,19 +72,20 @@ public class DefaultDAOManager extends AbstructDAOManager implements DAOManager 
 			} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
 	//DBからタスク一覧を取得
-	public ResultSet getListDAO() {
+	public ArrayList<Task> getListDAO() {
 
 		//メンバ
 		ResultSet result_set = null;
+		ArrayList<Task> tasklist = new ArrayList<Task>();
 
 		try {
 			//list取得用のSQLを用意
-			pre_statement = conn.prepareStatement(getlistsql);
+			pre_statement = conn.prepareStatement(getlistsql, ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
 
 			//SQL実行
 			result_set = pre_statement.executeQuery();
@@ -94,11 +96,22 @@ public class DefaultDAOManager extends AbstructDAOManager implements DAOManager 
 			System.out.println(number_of_row);
 			result_set.beforeFirst();   //最初に戻る
 
+			//取得したResultSetから、task配列オブジェクトを生成する。（num以外）
+			//タスクをリストに格納
+			while(result_set.next()) {
+				Task task = new Task();
+					task.setTaskNum(result_set.getNString("num"));
+					task.setDeadline(result_set.getDate("deadline"));
+					task.setTaskname(result_set.getNString("name"));
+					task.setContent(result_set.getNString("content"));
+					task.setClient(result_set.getNString("client"));
+				tasklist.add(task);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return result_set;
+		return tasklist;
 	}
 
 	@Override
@@ -118,19 +131,15 @@ public class DefaultDAOManager extends AbstructDAOManager implements DAOManager 
 		}
 			deletetasksql = deletetasksql + deletetasksqlend;
 
-			//確認用
-			System.out.println(deletetasksql);
 
 			//task削除用のSQLを用意
 			try {
-				pre_statement = conn.prepareStatement(deletetasksql);
+				pre_statement = conn.prepareStatement(deletetasksql, ResultSet.TYPE_SCROLL_INSENSITIVE,
+	                    ResultSet.CONCUR_READ_ONLY);
 				for(int i = 0; i < taskNumList.length; i++)
 				{
 					pre_statement.setString(i+1, taskNumList[i]);
 				}
-
-				//確認用
-				System.out.println(pre_statement);
 
 				//SQL実行(iには更新行数が格納される)
 				@SuppressWarnings("unused")
@@ -139,7 +148,34 @@ public class DefaultDAOManager extends AbstructDAOManager implements DAOManager 
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+	}
 
+	@Override
+	//ユーザ登録機能
+	public void registerDAO(UserContext userContext) throws DuplicationError {
+
+		System.out.println("登録DAO");
+		//ユーザ登録用のSQLを用意
+		try {
+			pre_statement = conn.prepareStatement(registersql, ResultSet.TYPE_SCROLL_INSENSITIVE,
+			        ResultSet.CONCUR_READ_ONLY);
+			pre_statement.setInt(1, userContext.getUserId());
+			pre_statement.setString(2,userContext.getPassword());
+
+			//SQL実行(iには更新行数が格納される)
+			@SuppressWarnings("unused")
+			int j = pre_statement.executeUpdate();
+
+		} catch(SQLException e){
+			int errorCode = e.getErrorCode();
+			System.out.println("SQLException#getErrorCode = " + errorCode);
+			if (errorCode == 1062) {
+				System.out.println("!!一意制約違反発生");
+				throw new DuplicationError();
+			}else {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

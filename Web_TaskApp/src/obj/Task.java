@@ -68,7 +68,7 @@ public class Task {
 		return  stringDate;
 	}
 
-	//一覧表示用メソッド(コンソール用)
+	//一覧表示用メソッド
 	public String list() {
 		String list = deadLine + " " + taskName + " " + content + " " + client;
 		return list;

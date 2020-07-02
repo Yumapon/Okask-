@@ -8,6 +8,22 @@ public class UserContext {
 	private String name;
 	private String password;
 
+	//コンストラクタ
+	public UserContext() {
+
+	}
+
+	public UserContext(int userId, String password) {
+		this.userId = userId;
+		this.password = password;
+	}
+
+	public UserContext(int userId, String name, String password) {
+		this.userId = userId;
+		this.name = name;
+		this.password = password;
+	}
+
 	//setter getter
 	public void setUserId(int userId) {
 		this.userId = userId;

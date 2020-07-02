@@ -6,11 +6,21 @@
 <!DOCTYPE html>
 <html>
 <head>
+<!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<!-- bootstrap-datepickerを読み込む -->
+<link rel="stylesheet" type="text/css" href="../bootstrap-datepicker-1.6.4-dist/css/bootstrap-datepicker.min.css">
+<script type="text/javascript" src="../bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="../bootstrap-datepicker-1.6.4-dist/locales/bootstrap-datepicker.ja.min.js"></script>
+
 <meta charset="UTF-8">
 <link rel="shortcut icon" href="resources/image/favicon.ico">
 <title>Okask!-新規作成画面-</title>
-<link rel="stylesheet" href="resources/css/default.css">
-<link rel="stylesheet" href="resources/css/createtask.css">
 </head>
 
 <%
@@ -18,58 +28,59 @@
  	response.setIntHeader("Refresh", 1800);
 %>
 <body>
-<header>
-	<div class="header-container">
-		<div class="relative">
-			<h1>Okask!</h1>
-			<%
-			//表示するメッセージ
-			int user_id = (int)session.getAttribute("user_id");
-			String user =  "ようこそ" + user_id + "さん　　　";
-			%>
-			<div class="welcomeMessage" style="display:inline-flex">
-				<div><%=user %></div>
-				<!-- ログアウトボタン -->
-				<div>
-					<form action="/Web_TaskApp/LogoutServlet" method="POST">
-						<input type="submit" value="ログアウト" />
-						<input type="hidden" name="functionStr" onClick= "onClickLogoutButton();" />
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-</header>
+<!-- ナビゲーションバー  -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light ">
+  <a class="navbar-brand" href="list.jsp">Okask!</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-	<h3>タスク新規作成</h3>
-		<form action="/Web_TaskApp/TaskAppServlet" method="POST">
-			<ul class="contents-container">
-				<li>
-					<label for="deadline">期限<span class="required">必須</span></label><br>
-					<input type="date" name="deadline" id="deadline" required><br><br>
-				</li>
-				<li>
-					<label for="taskname">タスク名<span class="required">必須</span></label><br>
-					<input type="text" name="taskname" id="task" size="50" required><br><br>
-				</li>
-				<li>
-					<label for="content">内容<span class="required">必須</span></label><br>
-					<textarea name="content" id="content" rows="10" cols="100" required></textarea><br><br>
-				</li>
-				<li>
-					<label for="client">依頼主<span class="required">必須</span></label><br>
-					<input type="text" name="client" id="client" required><br><br>
-				</li>
-			</ul>
-				<p class="sendButton"><input class="btn-square" type="submit" value="新規作成" onclick="onClickCreateButton();"></p>
-				<input id="functionStr" name="functionStr" type="hidden" />
-		</form>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+        <a class="nav-link" href="createtask.jsp">新規タスク <span class="sr-only">(current)</span></a>
+      </li>
+  </ul>
+    <form class="form-inline my-2 my-lg-0" action="/Web_TaskApp/LogoutServlet" method="POST">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Logout</button>
+      <input type="hidden" name="functionStr" onClick= "onClickLogoutButton();" />
+    </form>
+  </div>
+</nav>
 
-<footer>
-	<div class="footer-container">
-		<p><small>©2020 Okask! Corporation(仮)</small></p>
-	</div>
-</footer>
+<!-- タスク入力ホーム -->
+<h3>タスク新規作成</h3>
+
+<div class="container my-5" >
+<form action="/Web_TaskApp/TaskAppServlet" method="POST">
+  <div class="form-group">
+    <label for="deadline">期限</label>
+    <!-- ここにカレンダー表示用のテキストボックスを追加 -->
+    <input type="text" class="form-control" id="deadline" name="deadline" required >
+  </div>
+  <div class="form-group">
+    <label for="taskname">タスク名</label>
+    <input type="text" class="form-control" name="taskname" id="task" size="50" required maxlength='200'>
+  </div>
+  <div class="form-group">
+ 	<label for="content">内容</label>
+    <textarea name="content" class="form-control" id="content" rows="3" maxlength='2000'></textarea>
+  </div>
+  <div class="form-group">
+	<label for="client">依頼主</label>
+	<input type="text" class="form-control" name="client" id="client" required maxlength='100'>
+  </div>
+	<button type="submit" class="btn btn-primary" onClick = "onClickCreateButton();">新規作成</button>
+	<input id="functionStr" name="functionStr" type="hidden" />
+</form>
+</div>
+
+  <!-- フッタ -->
+  <footer class="footer mt-auto py-3 bg-light fixed-bottom">
+    <div class="container text-right">
+      <span class="text-muted"><small>©2020 Okask! Corporation(仮)</small></span>
+    </div>
+  </footer>
 
 <!-- スクリプト -->
 <script>
@@ -77,6 +88,15 @@
   function onClickCreateButton(){
 	document.getElementById("functionStr").value = "createtask";
   }
+
+  $('#deadline').datepicker();
 </script>
+
+<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
 </body>
 </html>

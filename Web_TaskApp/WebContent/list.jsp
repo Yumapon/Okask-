@@ -6,10 +6,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+<!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
 <meta charset="UTF-8">
 <title>タスク一覧</title>
-<link rel="stylesheet" href="resources/css/default.css">
-<link rel="stylesheet" href="resources/css/list.css">
 <link rel="shortcut icon" href="resources/image/favicon.ico">
 </head>
 <%
@@ -18,53 +23,51 @@
 %>
 
 <body>
-<header>
-	<div class="header-container">
-		<div class="relative">
-			<h1>Okask!</h1>
-			<%
-				//表示するメッセージ
-				int user_id = (int)session.getAttribute("user_id");
-				String user =  "ようこそ" + user_id+ "さん　　　";
-			%>
-			<div class="welcomeMessage" style="display:inline-flex">
-				<div><%=user %></div>
-				<!-- ログアウトボタン -->
-				<div>
-					<form action="/Web_TaskApp/LogoutServlet" method="POST">
-						<input type="submit" value="ログアウト" />
-						<input type="hidden" name="functionStr" onClick= "onClickLogoutButton();" />
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-</header>
 
+<!-- ナビゲーションバー  -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light ">
+  <a class="navbar-brand" href="#">Okask!</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+        <a class="nav-link" href="createtask.jsp">新規タスク <span class="sr-only">(current)</span></a>
+      </li>
+  </ul>
+    <form class="form-inline my-2 my-lg-0" action="/Web_TaskApp/LogoutServlet" method="POST">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Logout</button>
+      <input type="hidden" name="functionStr" onClick= "onClickLogoutButton();" />
+    </form>
+  </div>
+</nav>
+
+
+<div class="mt-auto" >
 <form name = "form" action="/Web_TaskApp/TaskAppServlet" method="POST">
-<!-- 一覧 -->
-<h1 class="title">タスク一覧</h1>
 
-<div class = "button" style="display:inline-flex">
-<!-- 新規作成ボタン -->
-	<input type= "submit" value="新規作成" onclick="onClickCreateButton();" />
 <!-- タスク削除ボタン -->
-	<input type="submit" value="削除" onclick="onClickDeleteButton();" />
+<div class="text-right my-2">
+	<input type="submit" value="削除" class="btn btn-primary py-0" onclick="onClickDeleteButton();" />
+	<input id="functionStr" name = "functionStr" type="hidden" />
 </div>
 
-	<input id="functionStr" name = "functionStr" type="hidden" />
+<!-- 一覧 -->
+<input type="checkbox" name="all" onClick="AllChecked();" />全て選択
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">タスク名</th>
+      <th scope="col">内容</th>
+      <th scope="col">依頼者</th>
+      <th scope="col">期限</th>
+    </tr>
+  </thead>
 
-<label>
-    <input type="checkbox" name="all" onClick="AllChecked();" />全て選択
-</label>
-<table class="table">
-<tr>
-<th></th>
-<th class="nowrap">期限</th>
-<th class="nowrap">タスク名</th>
-<th class="nowrap">内容</th>
-<th class="nowrap">依頼者</th>
-</tr>
+  <tbody>
 <%
 	@SuppressWarnings("unchecked")
 	ArrayList<Task> tasklist = (ArrayList<Task>)session.getAttribute("tasklist");
@@ -80,30 +83,25 @@
 		String client = tasklist.get(i).getClient();
 
 %>
-
-<tr>
- 	<td><input id="Checkbox<%=rowNum %>" type="checkbox" name = "task" value = "<%= taskNum%>" onClick="DisChecked();"/></td>
-	<td class="nowrap"> <%= deadLine%></td>
-	<td> <%= taskName %></td>
-	<td> <%= content %></td>
-	<td class="nowrap"> <%= client %></td>
-</tr>
-
+    <tr>
+      <th scope="row"><input id="Checkbox<%=rowNum %>" type="checkbox" name = "task" value = "<%= taskNum%>" onClick="DisChecked();"/></th>
+      <td><%= taskName %></td>
+      <td><%= content %></td>
+      <td><%= client %></td>
+      <td><%= deadLine%></td>
+    </tr>
 <%
 	rowNum++;
 	}
 %>
-
+ </tbody>
 </table>
 </form>
+</div>
+
 
 <!-- スクリプト -->
 <script>
-  //新規作成ボタンが押された際は、functionStrに'gocreatetaskui'をセット
-  function onClickCreateButton(){
-	document.getElementById("functionStr").value = "gocreatetaskui";
-  }
-
   //削除ボタンが押された際はfunctionStrに'deletetask'をセット
   function onClickDeleteButton(){
 
